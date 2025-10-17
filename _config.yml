@@ -1,0 +1,45 @@
+# Site settings
+title: "My Portfolio"
+email: "your-email@example.com"
+description: "A portfolio website"
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://khantraders000.github.io" # your base hostname
+
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-github-metadata
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-default-layout
+  - jekyll-titles-from-headings
+
+# Exclude folders that break GitHub Pages / Jekyll
+exclude:
+  - node_modules
+  - tailwind/node_modules
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - package-lock.json
+  - package.json
+  - yarn.lock
+
+# Optional: Include specific files/folders
+include:
+  - _pages
+  - _posts
+  - assets
+
+# Pagination
+paginate: 5
+paginate_path: "/page:num/"
+
+# GitHub Pages settings
+github:
+  is_project_page: true
