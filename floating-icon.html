@@ -1,0 +1,159 @@
+<!-- save as floating-chat.html and open in browser -->
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Floating Chat Icon</title>
+  <style>
+    /* Basic reset */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Floating button container */
+    .floating-chat {
+      position: fixed;
+      right: 20px;                /* distance from right edge */
+      bottom: 24px;               /* distance from bottom edge (lower of screen) */
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    /* Round button */
+    .chat-btn {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #3b82f6, #2563eb); /* blue gradient */
+      box-shadow: 0 8px 24px rgba(37,99,235,0.24);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease;
+      border: none;
+      outline: none;
+    }
+    .chat-btn:active { transform: scale(.96); }
+    .chat-btn:focus { box-shadow: 0 0 0 4px rgba(37,99,235,0.12); }
+
+    /* small bounce animation to attract attention */
+    @keyframes float-bounce {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0); }
+    }
+    .chat-btn.idle { animation: float-bounce 3s ease-in-out infinite; }
+
+    /* Optional label (hidden on very small screens) */
+    .chat-label {
+      background: #ffffff;
+      color: #0f172a;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-size: 14px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 110px;
+    }
+
+    /* small arrow on label */
+    .chat-label::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: white;
+      transform: rotate(45deg);
+      position: absolute;
+      right: calc(62px + 10px); /* aligns near the button */
+      bottom: 26px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+    }
+
+    /* Responsive: hide label on narrow screens */
+    @media (max-width: 420px) {
+      .chat-label { display: none; }
+      .floating-chat { right: 12px; bottom: 18px; }
+      .chat-btn { width: 56px; height: 56px; }
+    }
+
+    /* Accessible hidden text for screen readers */
+    .sr-only {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden; clip: rect(1px,1px,1px,1px);
+      white-space: nowrap; border: 0; padding: 0; margin: -1px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating widget -->
+  <div class="floating-chat" aria-hidden="false">
+    <div class="chat-label" role="note" aria-hidden="true">
+      Chat with us
+    </div>
+
+    <!-- Button acts as link; data-open-in-new-tab true => opens new tab -->
+    <button id="chatButton" class="chat-btn idle" aria-label="Open chatbot">
+      <!-- Chat SVG icon -->
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="sr-only">Open chatbot</span>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      const CHATBOT_URL = "https://example.com/your-chatbot"; // <-- Replace with your chatbot URL
+      const OPEN_IN_NEW_TAB = false; // true -> opens new tab; false -> same tab
+
+      const btn = document.getElementById('chatButton');
+
+      // Click handler: redirect to chatbot
+      btn.addEventListener('click', function (e) {
+        // small click animation removal of idle to stop bounce
+        btn.classList.remove('idle');
+
+        if (OPEN_IN_NEW_TAB) {
+          window.open(CHATBOT_URL, '_blank', 'noopener,noreferrer');
+        } else {
+          // same-tab redirect
+          window.location.href = CHATBOT_URL;
+        }
+      });
+
+      // Optional: show label only once after user has been on page for a few seconds
+      // (keeps UI friendly). You can remove this block if you want label always visible.
+      const label = document.querySelector('.chat-label');
+      if (label) {
+        label.style.opacity = '0';
+        label.style.transition = 'opacity .3s ease';
+        setTimeout(() => { label.style.opacity = '1'; }, 800);
+      }
+
+      // Optional: Pause bounce when user scrolls a lot (less distracting)
+      let isScrolling;
+      window.addEventListener('scroll', () => {
+        btn.classList.remove('idle');
+        window.clearTimeout(isScrolling);
+        isScrolling = setTimeout(() => { btn.classList.add('idle'); }, 800);
+      }, { passive: true });
+
+      // Keyboard accessibility: Enter/Space triggers click
+      btn.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          btn.click();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
